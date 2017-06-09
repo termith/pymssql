@@ -148,7 +148,9 @@ def add_dir_if_exists(filtered_dirs, *dirs):
 compiler = ccompiler.new_compiler()
 
 _extra_compile_args = [
-    '-DMSDBLIB'
+    '-DMSDBLIB',
+    '-Zi',
+    '/Od'
 ]
 
 WINDOWS = False
@@ -274,8 +276,6 @@ class build_ext(_build_ext):
                     '-Wl,-subsystem,windows-mthreads',
                     '-mwindows',
                     '-Wl,--strip-all',
-                    '-Zi',
-                    '/Od'
                 ]
                 libraries = [
                     'libiconv', 'iconv',
@@ -406,6 +406,7 @@ def ext_modules():
     return [
         Extension('_mssql', ['_mssql.%s' % source_extension],
             extra_compile_args = _extra_compile_args,
+            extra_link_args = ['-debug'],
             include_dirs = include_dirs,
             library_dirs = library_dirs
         ),
