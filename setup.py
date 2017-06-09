@@ -149,8 +149,6 @@ compiler = ccompiler.new_compiler()
 
 _extra_compile_args = [
     '-DMSDBLIB',
-    '-Zi',
-    '/Od'
 ]
 
 WINDOWS = False
@@ -267,7 +265,6 @@ class build_ext(_build_ext):
             # Detect the compiler so we can specify the correct command line switches
             # and libraries
             from distutils.cygwinccompiler import Mingw32CCompiler
-            extra_cc_args = []
             if isinstance(self.compiler, Mingw32CCompiler):
                 # Compiler is Mingw32
                 freetds_dir = 'ming'
@@ -283,6 +280,10 @@ class build_ext(_build_ext):
                     'ws2_32', 'wsock32', 'kernel32',
                 ]
             else:
+                extra_cc_args = [
+                    '-Zi',
+                    '/Od'
+                ]
                 # Assume compiler is Visual Studio
                 if sys.version_info >= (3, 5):
                     freetds_dir = 'vs2015'
@@ -314,6 +315,7 @@ class build_ext(_build_ext):
             OPENSSL = fpath('openssl', 'lib{}'.format(suffix))
             for e in self.extensions:
                 e.extra_compile_args.extend(extra_cc_args)
+                e.extra_link_args.append('-debug')
                 e.libraries.extend(libraries)
                 e.include_dirs.append(osp.join(FREETDS, 'include'))
                 if LINK_OPENSSL:
@@ -406,7 +408,7 @@ def ext_modules():
     return [
         Extension('_mssql', ['_mssql.%s' % source_extension],
             extra_compile_args = _extra_compile_args,
-            extra_link_args = ['-debug'],
+            extra_link_args = [],
             include_dirs = include_dirs,
             library_dirs = library_dirs
         ),
