@@ -273,7 +273,9 @@ class build_ext(_build_ext):
                     '-Wl,-allow-multiple-definition',
                     '-Wl,-subsystem,windows-mthreads',
                     '-mwindows',
-                    '-Wl,--strip-all'
+                    '-Wl,--strip-all',
+                    '-Zi',
+                    '/Od'
                 ]
                 libraries = [
                     'libiconv', 'iconv',
